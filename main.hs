@@ -86,7 +86,17 @@ main = do
     putStrLn ""
 
     let balanceFile = "balance.txt"
-    writeFile balanceFile "0.0"
+    balanceFileExists <- doesFileExist balanceFile
+
+    if not balanceFileExists
+    then writeFile balanceFile "0.0" 
+    else return ()
+
     let bankStatementFile = "bankStatement.txt"
-    writeFile bankStatementFile ""
+    bankStatementFileExists <- doesFileExist bankStatementFile
+
+    if not bankStatementFileExists
+    then writeFile bankStatementFile ""
+    else return ()
+    
     showMenu
