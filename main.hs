@@ -31,6 +31,8 @@ handleMenu input
         deleteAndRenameFile
         showMenu
     | input == 4 = do
+        withdraw
+        deleteAndRenameFile
         showMenu
     | input == 5 = putStrLn "Final do programa"
 
@@ -47,7 +49,6 @@ showBankStatement = do
     contents <- readFile file
     putStrLn contents
     putStrLn "Fim do extrato"
-    putStrLn ""
 
 deposit :: IO ()
 deposit = do
@@ -72,6 +73,29 @@ deposit = do
     appendFile bankStatementFile writeLineBankStatement
 
     putStrLn "Valor depositado com sucesso!"
+
+withdraw :: IO ()
+withdraw = do
+    putStr "Insira o valor que deseja sacar: "
+    valueToWithdraw <- getLine
+
+    let balanceFile = "balance.txt"
+    balance <- readFile balanceFile
+
+    let balanceFloat = read balance :: Float
+    let valueToWithdrawFloat = read valueToWithdraw :: Float
+
+    let withdrawResult = balanceFloat - valueToWithdrawFloat
+    let writeLine = printf "%.2f" withdrawResult
+
+    let balanceFile2 = "balance2.txt"
+    writeFile balanceFile2 writeLine
+
+    let bankStatementFile = "bankStatement.txt"
+    let writeLineBankStatement = printf "Saque: %.2f\n" valueToWithdrawFloat
+    appendFile bankStatementFile writeLineBankStatement
+
+    putStrLn "Valor sacado com sucesso!"
 
 deleteAndRenameFile :: IO ()
 deleteAndRenameFile = do
@@ -98,5 +122,5 @@ main = do
     if not bankStatementFileExists
     then writeFile bankStatementFile ""
     else return ()
-    
+
     showMenu
