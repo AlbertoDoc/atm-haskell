@@ -24,6 +24,7 @@ handleMenu input
         balance
         showMenu
     | input == 2 = do
+        showBankStatement
         showMenu
     | input == 3 = do
         deposit
@@ -39,6 +40,14 @@ balance = do
     putStr "Seu saldo é: "
     contents <- readFile file
     putStrLn contents
+
+showBankStatement :: IO ()
+showBankStatement = do
+    let file = "bankStatement.txt"
+    contents <- readFile file
+    putStrLn contents
+    putStrLn "Fim do extrato"
+    putStrLn ""
 
 deposit :: IO ()
 deposit = do
@@ -79,4 +88,5 @@ main = do
     let balanceFile = "balance.txt"
     writeFile balanceFile "0.0"
     let bankStatementFile = "bankStatement.txt"
+    writeFile bankStatementFile ""
     showMenu
