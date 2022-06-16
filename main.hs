@@ -1,4 +1,6 @@
 import Data.Void
+import Text.Printf
+import System.Directory
 
 showMenu :: IO ()
 showMenu = do
@@ -24,6 +26,8 @@ handleMenu input
     | input == 2 = do
         showMenu
     | input == 3 = do
+        deposit
+        deleteAndRenameFile
         showMenu
     | input == 4 = do
         showMenu
@@ -32,9 +36,38 @@ handleMenu input
 balance :: IO ()
 balance = do
     let file = "balance.txt"
-    putStr "Seu saldo eh: "
+    putStr "Seu saldo é: "
     contents <- readFile file
     putStrLn contents
+
+deposit :: IO ()
+deposit = do
+    putStr "Insira o valor que deseja depositar: "
+    valueToDeposit <- getLine
+
+    let balanceFile = "balance.txt"
+    balance <- readFile balanceFile
+
+    let balanceFloat = read balance :: Float
+    let valueToDepositFloat = read valueToDeposit :: Float
+
+
+    let depositResult = balanceFloat + valueToDepositFloat
+    let writeLine = printf "%.2f" depositResult
+
+    let balanceFile2 = "balance2.txt"
+    writeFile balanceFile2 writeLine
+
+    let bankStatementFile = "bankStatement.txt"
+    let writeLineBankStatement = printf "Deposito: %.2f\n" valueToDepositFloat
+    appendFile bankStatementFile writeLineBankStatement
+
+    putStrLn "Valor depositado com sucesso!"
+
+deleteAndRenameFile :: IO ()
+deleteAndRenameFile = do
+    removeFile "balance.txt"
+    renameFile "balance2.txt" "balance.txt"
 
 main :: IO()
 main = do
