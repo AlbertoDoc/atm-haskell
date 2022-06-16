@@ -32,7 +32,6 @@ handleMenu input
         showMenu
     | input == 4 = do
         withdraw
-        deleteAndRenameFile
         showMenu
     | input == 5 = putStrLn "Final do programa"
 
@@ -85,17 +84,24 @@ withdraw = do
     let balanceFloat = read balance :: Float
     let valueToWithdrawFloat = read valueToWithdraw :: Float
 
-    let withdrawResult = balanceFloat - valueToWithdrawFloat
+    if valueToWithdrawFloat > balanceFloat
+    then putStrLn "Não foi possível sacar, valor de saque maior que o saldo."
+    else handleWithdraw balanceFloat valueToWithdrawFloat
+
+handleWithdraw :: Float -> Float -> IO ()
+handleWithdraw balance withdrawValue = do
+    let withdrawResult = balance - withdrawValue
     let writeLine = printf "%.2f" withdrawResult
 
     let balanceFile2 = "balance2.txt"
     writeFile balanceFile2 writeLine
 
     let bankStatementFile = "bankStatement.txt"
-    let writeLineBankStatement = printf "Saque: %.2f\n" valueToWithdrawFloat
+    let writeLineBankStatement = printf "Saque: %.2f\n" withdrawValue
     appendFile bankStatementFile writeLineBankStatement
 
     putStrLn "Valor sacado com sucesso!"
+    deleteAndRenameFile
 
 deleteAndRenameFile :: IO ()
 deleteAndRenameFile = do
